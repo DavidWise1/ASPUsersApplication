@@ -1,0 +1,103 @@
+﻿@using (Html.BeginForm("Search", "Home", FormMethod.Post))
+{
+    <br />
+    <div class="form-group">
+        <input type="text" id="searchInput" name="searchInput" class="form-control" placeholder="Search...">
+    </div>
+    <button type="submit" class="btn btn-primary">Search</button> <button type="button" class="btn btn-primary" onclick="getAllUsers()">All users</button>
+
+                                                                  <script>
+ $(document).ready(function() {
+    $('#filterByName').keyup(function() {
+        var searchText = $('#filterByName').val();
+        $.ajax({
+            url: '@Url.Action("Index", "Home")',
+            type: 'POST',
+            data: { sortOrder: '', searchString: searchText },
+            success: function(result) {
+                updateTable(result);
+            },
+            error: function() {
+                alert('Error!');
+            }
+        });
+    });
+ });
+
+        function getAllUsers() {
+                $.ajax({
+            url: '@Url.Action("Index", "Home")',
+            type: 'POST',
+            data: { sortOrder: '', searchString: null },
+            success: function(result) {
+                updateTable(result);
+            },
+            error: function() {
+                alert('Error!');
+            }
+        });
+        }
+
+        function updateTable(userArray) { //functoin to update the table on Filtering.
+            // Get the table body element by its ID
+            const tbody = document.getElementById("userTable");
+
+            // Clear all existing rows
+            while (tbody.firstChild) {
+                tbody.removeChild(tbody.firstChild);
+            }
+
+            // Iterate through the userArray
+            for (let i = 0; i < userArray.length; i += 3) {
+                // Create a new row and cells
+                const newRow = document.createElement("tr");
+                const firstNameCell = document.createElement("td");
+                const lastNameCell = document.createElement("td");
+                const mobileNumberCell = document.createElement("td");
+
+                // Set the cell content
+                firstNameCell.textContent = userArray[i];
+                lastNameCell.textContent = userArray[i + 1];
+                mobileNumberCell.textContent = userArray[i + 2];
+
+                // Append cells to the new row
+                newRow.appendChild(firstNameCell);
+                newRow.appendChild(lastNameCell);
+                newRow.appendChild(mobileNumberCell);
+
+                // Append the new row to the table body
+                tbody.appendChild(newRow);
+            }
+        }
+
+                                                                  </script>
+}
+
+@{
+    ViewBag.Title = "Home Page";
+}
+
+<h2>Users</h2>
+
+
+
+<table class="table table-striped table-bordered table-hover">
+    <thead class="thead-light">
+        <tr>
+            <th scope="col"><a href="@Url.Action("Index", new { sortOrder = ViewBag.FirstNameSortParam })">First Name</a><input type="text" id="filterByName"></th>
+            <th scope="col"><a href="@Url.Action("Index", new { sortOrder = ViewBag.LastNameSortParam })">Last Name</a></th>
+            <th scope="col"><a href="@Url.Action("Index", new { sortOrder = ViewBag.MobileNumberSortParam })">Mobile Number</a></th>
+        </tr>
+    </thead>
+    <tbody id="userTable">
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.FirstName</td>
+                <td>@item.LastName</td>
+                <td>@item.MobileNumber</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
