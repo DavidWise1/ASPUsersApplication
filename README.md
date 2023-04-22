@@ -11,6 +11,6 @@ Right click Databases on left pane (Object Explorer)
 
 Click Restore Database...
 
-Choose Device, click ..., and add your .bak file
+Choose Device, click ..., and add the noted .bak file
 
 Click OK, then OK again
